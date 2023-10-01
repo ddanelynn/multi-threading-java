@@ -8,11 +8,10 @@ public class CapitalizeParallel {
         String input = args[0];
         char[] result = new char[input.length()];
         Thread[] threads = new Thread[input.length()];
-        Mutex mutex = new Mutex();
 
         for (int i = 0; i < input.length(); i++) {
             char currentChar = input.charAt(i);
-            threads[i] = new Thread(new CapitalizeTask(currentChar, i, result, mutex));
+            threads[i] = new Thread(new CapitalizeTask(currentChar, i, result));
             threads[i].start();
         }
 
@@ -33,25 +32,18 @@ public class CapitalizeParallel {
         private char character;
         private int index;
         private char[] result;
-        private Mutex mutex;
 
-        public CapitalizeTask(char character, int index, char[] result, Mutex mutex) {
+        public CapitalizeTask(char character, int index, char[] result) {
             this.character = character;
             this.index = index;
             this.result = result;
-            this.mutex = mutex;
         }
 
         @Override
         public void run() {
             char capitalizedChar = Character.toUpperCase(character);
-            synchronized (mutex) {
-                result[index] = capitalizedChar;
-            }
+            result[index] = capitalizedChar;
         }
-    }
-
-    static class Mutex {
     }
 }
 
